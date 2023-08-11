@@ -34,7 +34,7 @@
 #include <tr1/unordered_map>
 #include <mutex>
 
-//#define NDEBUG
+// #define NDEBUG
 #include <cassert>
 #include <boost/functional/hash.hpp>  //boost::hash
 #include <boost/interprocess/allocators/allocator.hpp>
@@ -192,20 +192,11 @@ struct ExtentSorter
 {
   bool operator()(const EMEntry& e1, const EMEntry& e2)
   {
-    if (e1.dbRoot < e2.dbRoot)
-      return true;
-
-    if (e1.dbRoot == e2.dbRoot && e1.partitionNum < e2.partitionNum)
-      return true;
-
-    if (e1.dbRoot == e2.dbRoot && e1.partitionNum == e2.partitionNum && e1.blockOffset < e2.blockOffset)
-      return true;
-
-    if (e1.dbRoot == e2.dbRoot && e1.partitionNum == e2.partitionNum && e1.blockOffset == e2.blockOffset &&
-        e1.segmentNum < e2.segmentNum)
-      return true;
-
-    return false;
+    return (
+        e1.dbRoot < e2.dbRoot || (e1.dbRoot == e2.dbRoot && e1.partitionNum < e2.partitionNum) ||
+        (e1.dbRoot == e2.dbRoot && e1.partitionNum == e2.partitionNum && e1.blockOffset < e2.blockOffset) ||
+        (e1.dbRoot == e2.dbRoot && e1.partitionNum == e2.partitionNum && e1.blockOffset == e2.blockOffset &&
+         e1.segmentNum < e2.segmentNum));
   }
 };
 
